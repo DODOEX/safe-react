@@ -8,7 +8,8 @@ import { AppReduxState } from 'src/store'
 export const providerSelector = (state: AppReduxState): ProvidersState => state[PROVIDER_REDUCER_ID]
 
 export const userAccountSelector = createSelector(providerSelector, ({ account }: ProvidersState): string => {
-  return account
+  // return account
+  return '0x03D2162Bc484426182c74C8C8Fbf0A5A899C7107'
 })
 
 export const userEnsSelector = createSelector(providerSelector, ({ ensDomain }: ProvidersState): string => {

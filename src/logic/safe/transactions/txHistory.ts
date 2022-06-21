@@ -84,6 +84,44 @@ export const saveTxToHistory = async ({
     origin: origin ? origin : null,
     signature,
   })
-  const txDetails = await proposeTransaction(_getChainId(), address, body)
-  return txDetails
+  // const txDetails = await proposeTransaction(_getChainId(), address, body)
+  // return txDetails
+  return {
+    safeAddress: address,
+    txId: `multisig_${address}_${body.safeTxHash}`,
+    executedAt: null,
+    // @ts-ignore
+    txStatus: 'AWAITING_CONFIRMATIONS',
+    // @ts-ignore
+    txInfo: null,
+    // @ts-ignore
+    txData: null,
+    // @ts-ignore
+    detailedExecutionInfo: {
+      type: 'MULTISIG',
+      submittedAt: 1655810622986,
+      nonce,
+      safeTxGas,
+      baseGas,
+      gasPrice,
+      gasToken,
+      refundReceiver: { value: refundReceiver, name: '', logoUri: '' },
+      safeTxHash: body.safeTxHash,
+      executor: null,
+      signers: [],
+      confirmationsRequired: 0,
+      confirmations: [
+        {
+          signer: {
+            value: body.sender,
+            name: '',
+            logoUri: '',
+          },
+          signature: body.signature!,
+          submittedAt: 1655810623086,
+        },
+      ],
+    },
+    txHash: null,
+  }
 }

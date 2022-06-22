@@ -220,7 +220,7 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
         Transaction Details
       </StyledButtonLink>
       <Modal description="" handleClose={onClose} open={showDetail} title="">
-        <textarea rows={20} value={JSON.stringify(transaction)} />
+        <textarea rows={20} value={window.localStorage.getItem(`signed-transaction-${transaction.id}`) ?? 'unknown'} />
       </Modal>
     </TxDetailsContainer>
   )

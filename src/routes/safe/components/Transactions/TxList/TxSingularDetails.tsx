@@ -88,7 +88,7 @@ const TxSingularDetails = (): ReactElement => {
   }, [chainId, dispatch, inputData, inputFinished, txId])
 
   // Fetch tx details
-  const [fetchedTx, error] = useAsync<TransactionDetails>(() => fetchSafeTransaction(txId), [txId])
+  const [fetchedTx, error] = useAsync<TransactionDetails>(() => fetchSafeTransaction(txId), [txId, inputFinished])
 
   useEffect(() => {
     if (!storedTx && fetchedTx) {
@@ -108,7 +108,6 @@ const TxSingularDetails = (): ReactElement => {
           values: [{ type: 'TRANSACTION', transaction: makeTxFromDetails(fetchedTx), conflictType: 'None' }],
         }),
       )
-      window.localStorage.setItem(`signed-transaction-${txId}`, inputData)
     }
   }, [storedTx, fetchedTx, dispatch, chainId, txId, inputData])
 

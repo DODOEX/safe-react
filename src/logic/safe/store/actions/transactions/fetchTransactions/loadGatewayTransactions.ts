@@ -25,15 +25,15 @@ export const loadPagedHistoryTransactions = async (
   }
 
   try {
-    const { results, next, previous } = await getTransactionHistory(
-      chainId,
-      checksumAddress(safeAddress),
-      historyPointers[chainId][safeAddress].next,
-    )
+    // const { results, next, previous } = await getTransactionHistory(
+    //   chainId,
+    //   checksumAddress(safeAddress),
+    //   historyPointers[chainId][safeAddress].next,
+    // )
 
-    historyPointers[chainId][safeAddress] = { next, previous }
+    // historyPointers[chainId][safeAddress] = { next, previous }
 
-    return { values: results, next: historyPointers[chainId][safeAddress].next }
+    return { values: [], next: historyPointers[chainId][safeAddress].next }
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }
@@ -42,17 +42,17 @@ export const loadPagedHistoryTransactions = async (
 export const loadHistoryTransactions = async (safeAddress: string): Promise<HistoryGatewayResponse['results']> => {
   const chainId = _getChainId()
   try {
-    const { results, next, previous } = await getTransactionHistory(chainId, checksumAddress(safeAddress))
+    // const { results, next, previous } = await getTransactionHistory(chainId, checksumAddress(safeAddress))
 
-    if (!historyPointers[chainId]) {
-      historyPointers[chainId] = {}
-    }
+    // if (!historyPointers[chainId]) {
+    //   historyPointers[chainId] = {}
+    // }
 
-    if (!historyPointers[chainId][safeAddress]) {
-      historyPointers[chainId][safeAddress] = { next, previous }
-    }
+    // if (!historyPointers[chainId][safeAddress]) {
+    //   historyPointers[chainId][safeAddress] = { next, previous }
+    // }
 
-    return results
+    return []
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }

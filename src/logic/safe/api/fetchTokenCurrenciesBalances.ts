@@ -25,72 +25,68 @@ export const fetchTokenCurrenciesBalances = async ({
   trustedTokens = false,
 }: FetchTokenCurrenciesBalancesProps): Promise<SafeBalanceResponse> => {
   const address = checksumAddress(safeAddress)
-  const web3 = getWeb3ReadOnly()
-  const erc20Instance = new web3.eth.Contract(
-    [
-      {
-        inputs: [
-          {
-            internalType: 'address',
-            name: 'owner',
-            type: 'address',
-          },
-        ],
-        name: 'balanceOf',
-        outputs: [
-          {
-            internalType: 'uint256',
-            name: 'balance',
-            type: 'uint256',
-          },
-        ],
-        stateMutability: 'view',
-        type: 'function',
-      },
-    ],
-    '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2',
-  )
-  const [ETHBalance, DODOBalance] = await Promise.all([
-    web3.eth.getBalance(address),
-    erc20Instance.methods.balanceOf(address).call(),
-  ])
-  return {
-    fiatTotal: '0',
-    items: [
-      {
-        tokenInfo: {
-          type: TokenType.NATIVE_TOKEN,
-          address: '0x0000000000000000000000000000000000000000',
-          decimals: 18,
-          symbol: 'BNB',
-          name: 'BNB',
-          logoUri: 'https://safe-transaction-assets.gnosis-safe.io/chains/56/currency_logo.png',
-        },
-        balance: new BigNumber(ETHBalance).toString(),
-        fiatBalance: '0.00000',
-        fiatConversion: '0',
-      },
-      {
-        tokenInfo: {
-          type: TokenType.ERC20,
-          address: '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2',
-          decimals: 18,
-          symbol: 'DODO',
-          name: 'DODO',
-          logoUri: 'https://safe-transaction-assets.gnosis-safe.io/chains/56/currency_logo.png',
-        },
-        balance: new BigNumber(DODOBalance).toString(),
-        fiatBalance: '0.00000',
-        fiatConversion: '0',
-      },
-    ],
-  }
-  // try {
-  //   return getBalances(_getChainId(), address, selectedCurrency, {
-  //     exclude_spam: excludeSpamTokens,
-  //     trusted: trustedTokens,
-  //   })
-  // } catch (e) {
-
+  // const web3 = getWeb3ReadOnly()
+  // const erc20Instance = new web3.eth.Contract(
+  //   [
+  //     {
+  //       inputs: [
+  //         {
+  //           internalType: 'address',
+  //           name: 'owner',
+  //           type: 'address',
+  //         },
+  //       ],
+  //       name: 'balanceOf',
+  //       outputs: [
+  //         {
+  //           internalType: 'uint256',
+  //           name: 'balance',
+  //           type: 'uint256',
+  //         },
+  //       ],
+  //       stateMutability: 'view',
+  //       type: 'function',
+  //     },
+  //   ],
+  //   '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2',
+  // )
+  // const [ETHBalance, DODOBalance] = await Promise.all([
+  //   web3.eth.getBalance(address),
+  //   erc20Instance.methods.balanceOf(address).call(),
+  // ])
+  // return {
+  //   fiatTotal: '0',
+  //   items: [
+  //     {
+  //       tokenInfo: {
+  //         type: TokenType.NATIVE_TOKEN,
+  //         address: '0x0000000000000000000000000000000000000000',
+  //         decimals: 18,
+  //         symbol: 'BNB',
+  //         name: 'BNB',
+  //         logoUri: 'https://safe-transaction-assets.gnosis-safe.io/chains/56/currency_logo.png',
+  //       },
+  //       balance: new BigNumber(ETHBalance).toString(),
+  //       fiatBalance: '0.00000',
+  //       fiatConversion: '0',
+  //     },
+  //     {
+  //       tokenInfo: {
+  //         type: TokenType.ERC20,
+  //         address: '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2',
+  //         decimals: 18,
+  //         symbol: 'DODO',
+  //         name: 'DODO',
+  //         logoUri: 'https://safe-transaction-assets.gnosis-safe.io/chains/56/currency_logo.png',
+  //       },
+  //       balance: new BigNumber(DODOBalance).toString(),
+  //       fiatBalance: '0.00000',
+  //       fiatConversion: '0',
+  //     },
+  //   ],
   // }
+  return getBalances(_getChainId(), address, selectedCurrency, {
+    exclude_spam: excludeSpamTokens,
+    trusted: trustedTokens,
+  })
 }

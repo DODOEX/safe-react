@@ -1,6 +1,6 @@
 import { Icon, Link, Loader, Text } from '@gnosis.pm/safe-react-components'
 import cn from 'classnames'
-import { ReactElement, useContext } from 'react'
+import { ReactElement, useCallback, useContext, useState } from 'react'
 import styled from 'styled-components'
 
 import {
@@ -30,11 +30,23 @@ import TxModuleInfo from './TxModuleInfo'
 import Track from 'src/components/Track'
 import { TX_LIST_EVENTS } from 'src/utils/events/txList'
 import TxShareButton from './TxShareButton'
+import Modal from 'src/components/Modal'
+import ButtonLink from 'src/components/layout/ButtonLink'
+import { sm } from 'src/theme/variables'
 
 const NormalBreakingText = styled(Text)`
   line-break: normal;
   word-break: normal;
   padding-right: 32px;
+`
+
+const StyledButtonLink = styled(ButtonLink)`
+  margin-top: ${sm};
+  padding-left: 0;
+
+  & > p {
+    margin-left: 0;
+  }
 `
 
 const TxDataGroup = ({ txDetails }: { txDetails: ExpandedTxDetails }): ReactElement | null => {
@@ -100,6 +112,9 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
   const currentUser = useSelector(userAccountSelector)
   const isMultiSend = data && isMultiSendTxInfo(data.txInfo)
   const shouldShowStepper = data?.detailedExecutionInfo && isMultiSigExecutionDetails(data.detailedExecutionInfo)
+  const [showDetail, setShowDetail] = useState(false)
+  const onClose = useCallback(() => setShowDetail(false), [])
+  const onOpen = useCallback(() => setShowDetail(true), [])
 
   // To avoid prop drilling into TxDataGroup, module details are positioned here accordingly
   const getModuleDetails = () => {
@@ -201,6 +216,12 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
           )}
         </div>
       )}
+      <StyledButtonLink onClick={onOpen} color="primary" iconSize="sm" textSize="xl">
+        Transaction Details
+      </StyledButtonLink>
+      <Modal description="" handleClose={onClose} open={showDetail} title="">
+        <textarea rows={20} value={JSON.stringify(transaction)} />
+      </Modal>
     </TxDetailsContainer>
   )
 }

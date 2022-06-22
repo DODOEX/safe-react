@@ -11,7 +11,8 @@ export const getAwaitingGatewayTransactions = (
     // The transaction is not executed and is not cancelled, nor pending, so it's still waiting confirmations
     if (tx.txStatus === LocalTransactionStatus.AWAITING_CONFIRMATIONS && isMultisigExecutionInfo(tx.executionInfo)) {
       // Then we check if the waiting confirmations are not from the current user, otherwise, filters this transaction
-      return addressInList(tx.executionInfo?.missingSigners ?? undefined)(userAccount)
+      // return addressInList(tx.executionInfo?.missingSigners ?? undefined)(userAccount)
+      return true
     }
 
     return false

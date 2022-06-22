@@ -36,6 +36,8 @@ import { getContractErrorMessage } from 'src/logic/contracts/safeContractErrors'
 import { isWalletRejection } from 'src/logic/wallets/errors'
 import { trackEvent } from 'src/utils/googleTagManager'
 import { WALLET_EVENTS } from 'src/utils/events/wallet'
+import { addQueuedTransactions } from './transactions/gatewayTransactions'
+import { makeTxFromDetails } from 'src/routes/safe/components/Transactions/TxList/utils'
 
 export interface CreateTransactionArgs {
   navigateToTransactionsTab?: boolean
@@ -104,6 +106,15 @@ export class TxSender {
     if (!isFinalization || !this.txId) {
       try {
         txDetails = await saveTxToHistory({ ...txArgs, signature, origin: txProps.origin })
+        // dispatch(
+        //   addQueuedTransactions({
+        //     // @ts-ignore
+        //     chainId: txDetails.chainId,
+        //     // @ts-ignore
+        //     safeAddress: txDetails.safeAddress,
+        //     values: [{ type: 'TRANSACTION', transaction: makeTxFromDetails(txDetails), conflictType: 'None' }],
+        //   }),
+        // )
         this.txId = txDetails.txId
       } catch (err) {
         logError(Errors._816, err.message)

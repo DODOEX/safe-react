@@ -1,10 +1,17 @@
-import { MultisigTransactionRequest, proposeTransaction, TransactionDetails } from '@gnosis.pm/safe-react-gateway-sdk'
+import {
+  MultisigTransactionRequest,
+  proposeTransaction,
+  TransactionDetails,
+  TransactionTokenType,
+  TransferDirection,
+} from '@gnosis.pm/safe-react-gateway-sdk'
 
 import { GnosisSafe } from 'src/types/contracts/gnosis_safe.d'
 import { _getChainId } from 'src/config'
 
 import { checksumAddress } from 'src/utils/checksumAddress'
 import { TxArgs } from '../store/models/types/transaction'
+import { getWeb3ReadOnly } from 'src/logic/wallets/getWeb3'
 
 type ProposeTxBody = Omit<MultisigTransactionRequest, 'safeTxHash'> & {
   safeInstance: GnosisSafe
@@ -84,22 +91,93 @@ export const saveTxToHistory = async ({
     origin: origin ? origin : null,
     signature,
   })
-  // const txDetails = await proposeTransaction(_getChainId(), address, body)
+
+  const tt = await proposeTransaction(_getChainId(), address, body)
+  console.log('dev gonghe', tt)
+  debugger
   // return txDetails
-  return {
+  const web3 = getWeb3ReadOnly()
+  const contractInstance = new web3.eth.Contract(
+    [
+      {
+        inputs: [],
+        name: 'getOwners',
+        outputs: [
+          {
+            internalType: 'address[]',
+            name: '',
+            type: 'address[]',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'getThreshold',
+        outputs: [
+          {
+            internalType: 'uint256',
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+      {
+        inputs: [],
+        name: 'nonce',
+        outputs: [
+          {
+            internalType: 'uint256',
+            name: '',
+            type: 'uint256',
+          },
+        ],
+        stateMutability: 'view',
+        type: 'function',
+      },
+    ],
+    address,
+  )
+  const [owners, threshold] = await Promise.all([
+    contractInstance.methods.getOwners().call(),
+    contractInstance.methods.getThreshold().call(),
+  ])
+  const submittedAt = Date.now()
+  const txId = `multisig_${address}_${body.safeTxHash}`
+  const txDetails = {
+    // @ts-ignore
+    chainId: _getChainId(),
     safeAddress: address,
-    txId: `multisig_${address}_${body.safeTxHash}`,
+    txId,
     executedAt: null,
     // @ts-ignore
     txStatus: 'AWAITING_CONFIRMATIONS',
+    txInfo: {
+      type: 'Custom',
+      dataSize: '0',
+      methodName: '',
+      to: { value: body.to, name: '', logoUri: '' },
+      value: body.value,
+    },
     // @ts-ignore
-    txInfo: null,
-    // @ts-ignore
-    txData: null,
+    txData: {
+      hexData: data,
+      dataDecoded: null,
+      to: {
+        value: body.to,
+        name: '',
+        logoUri: '',
+      },
+      value: body.value,
+      operation: 0,
+    },
     // @ts-ignore
     detailedExecutionInfo: {
       type: 'MULTISIG',
-      submittedAt: 1655810622986,
+      submittedAt,
       nonce,
       safeTxGas,
       baseGas,
@@ -108,8 +186,8 @@ export const saveTxToHistory = async ({
       refundReceiver: { value: refundReceiver, name: '', logoUri: '' },
       safeTxHash: body.safeTxHash,
       executor: null,
-      signers: [],
-      confirmationsRequired: 0,
+      signers: owners.map((owner) => ({ value: owner, name: '', logoUri: '' })),
+      confirmationsRequired: Number(threshold),
       confirmations: [
         {
           signer: {
@@ -117,11 +195,14 @@ export const saveTxToHistory = async ({
             name: '',
             logoUri: '',
           },
-          signature: body.signature!,
-          submittedAt: 1655810623086,
+          signature: signature!,
+          submittedAt,
         },
       ],
     },
     txHash: null,
   }
+  window.localStorage.setItem(`signed-transaction-${txId}`, JSON.stringify(txDetails))
+  // @ts-ignore
+  return txDetails
 }

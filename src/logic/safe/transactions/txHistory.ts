@@ -194,7 +194,7 @@ export const saveTxToHistory = async ({
             name: '',
             logoUri: '',
           },
-          signature: signature!,
+          signature: '0x' + signature!,
           submittedAt,
         },
       ],

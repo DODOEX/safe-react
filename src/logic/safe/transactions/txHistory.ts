@@ -92,9 +92,8 @@ export const saveTxToHistory = async ({
     signature,
   })
 
-  const tt = await proposeTransaction(_getChainId(), address, body)
-  console.log('dev gonghe', tt)
-  debugger
+  //  await proposeTransaction(_getChainId(), address, body)
+
   // return txDetails
   const web3 = getWeb3ReadOnly()
   const contractInstance = new web3.eth.Contract(

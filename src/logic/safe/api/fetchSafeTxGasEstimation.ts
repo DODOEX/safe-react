@@ -17,7 +17,7 @@ export const fetchSafeTxGasEstimation = async ({
   safeAddress,
   ...body
 }: FetchSafeTxGasEstimationProps): Promise<SafeTransactionEstimation> => {
-  // return postSafeGasEstimation(_getChainId(), checksumAddress(safeAddress), body)
+  // await postSafeGasEstimation(_getChainId(), checksumAddress(safeAddress), body)
   const web3 = getWeb3ReadOnly()
   const contractInstance = new web3.eth.Contract(
     [
@@ -65,8 +65,8 @@ export const fetchSafeTxGasEstimation = async ({
   )
   const nonce = await contractInstance.methods.nonce().call()
   return {
-    currentNonce: nonce,
-    recommendedNonce: Number(nonce) + 1,
+    currentNonce: Number(nonce),
+    recommendedNonce: Number(nonce),
     safeTxGas: '500000',
   }
 }

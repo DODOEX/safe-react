@@ -16,7 +16,7 @@ const useCanTxExecute: UseCanTxExecuteType = (
 ) => {
   const safeInfo = useSelector(currentSafe)
 
-  if (txNonce && parseInt(txNonce, 10) !== safeInfo.nonce + 1) {
+  if (txNonce && parseInt(txNonce, 10) !== safeInfo.nonce) {
     return false
   }
 

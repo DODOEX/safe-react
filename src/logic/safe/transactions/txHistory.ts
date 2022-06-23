@@ -147,14 +147,14 @@ export const saveTxToHistory = async ({
   ])
   const submittedAt = Date.now()
   const txId = `multisig_${address}_${body.safeTxHash}`
-  const txDetails = {
+  let txDetails = {
     // @ts-ignore
     chainId: _getChainId(),
     safeAddress: address,
     txId,
     executedAt: null,
     // @ts-ignore
-    txStatus: LocalTransactionStatus.AWAITING_EXECUTION,
+    txStatus: LocalTransactionStatus.AWAITING_CONFIRMATIONS,
     txInfo: {
       type: 'Custom',
       dataSize: '0',
@@ -203,10 +203,20 @@ export const saveTxToHistory = async ({
     txHash: null,
   }
   const confirmedTx = window.localStorage.getItem(`signed-transaction-${txId}`)
-  if (confirmedTx)
-    txDetails.detailedExecutionInfo.confirmations = txDetails.detailedExecutionInfo.confirmations.concat(
-      JSON.parse(confirmedTx).detailedExecutionInfo.confirmations,
-    )
+  if (confirmedTx) {
+    txDetails = JSON.parse(confirmedTx)
+    txDetails.detailedExecutionInfo.confirmations = txDetails.detailedExecutionInfo.confirmations.concat([
+      {
+        signer: {
+          value: body.sender,
+          name: '',
+          logoUri: '',
+        },
+        signature: '0x' + signature!,
+        submittedAt,
+      },
+    ])
+  }
   if (txDetails.detailedExecutionInfo.confirmations.length >= txDetails.detailedExecutionInfo.confirmationsRequired)
     txDetails.txStatus = LocalTransactionStatus.AWAITING_EXECUTION
   window.localStorage.setItem(`signed-transaction-${txId}`, JSON.stringify(txDetails))

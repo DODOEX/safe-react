@@ -12,6 +12,7 @@ import { _getChainId } from 'src/config'
 import { checksumAddress } from 'src/utils/checksumAddress'
 import { TxArgs } from '../store/models/types/transaction'
 import { getWeb3ReadOnly } from 'src/logic/wallets/getWeb3'
+import { LocalTransactionStatus } from 'src/logic/safe/store/models/types/gateway.d'
 
 type ProposeTxBody = Omit<MultisigTransactionRequest, 'safeTxHash'> & {
   safeInstance: GnosisSafe
@@ -153,7 +154,7 @@ export const saveTxToHistory = async ({
     txId,
     executedAt: null,
     // @ts-ignore
-    txStatus: 'AWAITING_CONFIRMATIONS',
+    txStatus: LocalTransactionStatus.AWAITING_EXECUTION,
     txInfo: {
       type: 'Custom',
       dataSize: '0',
@@ -201,6 +202,13 @@ export const saveTxToHistory = async ({
     },
     txHash: null,
   }
+  const confirmedTx = window.localStorage.getItem(`signed-transaction-${txId}`)
+  if (confirmedTx)
+    txDetails.detailedExecutionInfo.confirmations = txDetails.detailedExecutionInfo.confirmations.concat(
+      JSON.parse(confirmedTx).detailedExecutionInfo.confirmations,
+    )
+  if (txDetails.detailedExecutionInfo.confirmations.length >= txDetails.detailedExecutionInfo.confirmationsRequired)
+    txDetails.txStatus = LocalTransactionStatus.AWAITING_EXECUTION
   window.localStorage.setItem(`signed-transaction-${txId}`, JSON.stringify(txDetails))
   // @ts-ignore
   return txDetails

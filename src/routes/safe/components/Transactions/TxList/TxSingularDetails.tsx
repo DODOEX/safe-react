@@ -146,6 +146,15 @@ const TxSingularDetails = (): ReactElement => {
   return (
     <TxLocationContext.Provider value={{ txLocation: storedTx?.txLocation || fallbackLocation }}>
       <TxList transactions={[[detailedTx.timestamp.toString(), [detailedTx]]]} />
+      <StyledButtonLink
+        color="primary"
+        onClick={() => {
+          window.localStorage.removeItem(`signed-transaction-${txId}`)
+          window.location.reload()
+        }}
+      >
+        Clear Info
+      </StyledButtonLink>
     </TxLocationContext.Provider>
   )
 }

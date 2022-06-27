@@ -21,10 +21,11 @@ export const isTxHashSignedWithPrefix = (txHash: string, signature: string, owne
 type AdjustVOverload = {
   (signingMethod: 'eth_signTypedData', signature: string): string
   (signingMethod: 'eth_sign', signature: string, safeTxHash: string, sender: string): string
+  (signingMethod: 'personal_sign', signature: string, safeTxHash: string, sender: string): string
 }
 
 export const adjustV: AdjustVOverload = (
-  signingMethod: 'eth_sign' | 'eth_signTypedData',
+  signingMethod: 'eth_sign' | 'eth_signTypedData' | 'personal_sign',
   signature: string,
   safeTxHash?: string,
   sender?: string,
@@ -49,6 +50,10 @@ export const adjustV: AdjustVOverload = (
     if (signatureHasPrefix) {
       sigV += 4
     }
+  }
+
+  if (signingMethod === 'personal_sign') {
+    sigV += 4
   }
 
   if (signingMethod === 'eth_signTypedData') {

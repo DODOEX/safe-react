@@ -101,6 +101,14 @@ export const fetchTokenCurrenciesBalances = async ({
       name: 'WBNB',
       logoUri: '',
     },
+    {
+      type: TokenType.ERC20,
+      address: '0x4A9A2b2b04549C3927dd2c9668A5eF3fCA473623',
+      decimals: 18,
+      symbol: 'DF',
+      name: 'DF',
+      logoUri: '',
+    },
   ]
   const balances = new Map()
   const promises = tokenlist.map((token) =>

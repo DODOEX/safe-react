@@ -109,6 +109,14 @@ export const fetchTokenCurrenciesBalances = async ({
       name: 'DF',
       logoUri: '',
     },
+    {
+      type: TokenType.ERC20,
+      address: '0x43Dfc4159D86F3A37A5A4B3D4580b888ad7d4DDd',
+      decimals: 18,
+      symbol: 'DODO',
+      name: 'DODO',
+      logoUri: '',
+    },
   ]
   const balances = new Map()
   const promises = tokenlist.map((token) =>

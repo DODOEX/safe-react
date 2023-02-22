@@ -111,7 +111,7 @@ export const fetchTokenCurrenciesBalances = async ({
     },
     {
       type: TokenType.ERC20,
-      address: '0x43Dfc4159D86F3A37A5A4B3D4580b888ad7d4DDd',
+      address: '0x67ee3Cb086F8a16f34beE3ca72FAD36F7Db929e2',
       decimals: 18,
       symbol: 'DODO',
       name: 'DODO',

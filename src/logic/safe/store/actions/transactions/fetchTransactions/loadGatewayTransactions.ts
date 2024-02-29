@@ -142,9 +142,6 @@ export const loadHistoryTransactions = async (
   }
 
   try {
-<<<<<<< HEAD
-    const { results } = await getHistoryTxListPage(chainId, safeAddress, filter)
-=======
     // const { results, next, previous } = await getTransactionHistory(chainId, checksumAddress(safeAddress))
 
     // if (!historyPointers[chainId]) {
@@ -154,7 +151,6 @@ export const loadHistoryTransactions = async (
     // if (!historyPointers[chainId][safeAddress]) {
     //   historyPointers[chainId][safeAddress] = { next, previous }
     // }
->>>>>>> 7b8be080a758f26b3407aa5a847e758f8fc13132
 
     return []
   } catch (e) {

@@ -14,8 +14,15 @@ export const fetchSafeTransaction = async (txId: string): Promise<TransactionDet
   const cacheKey = `${chainId}_${txId}`
 
   // const promise: Promise<TransactionDetails> = cache[cacheKey] || getTransactionDetails(chainId, txId)
+   // GET txId
+   const res = await fetch(`https://natural-grouse-35163.upstash.io/get/signed-transaction-${txId}/`, {
+    headers: {
+      Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+    },
+  })
+  const json = await res.json()
   const promise: Promise<TransactionDetails> =
-    cache[cacheKey] || Promise.resolve(JSON.parse(window.localStorage.getItem(`signed-transaction-${txId}`) ?? ''))
+    cache[cacheKey] || Promise.resolve(JSON.parse(json.result ?? ''))
 
   // Save the promise into cache
   cache[cacheKey] = promise

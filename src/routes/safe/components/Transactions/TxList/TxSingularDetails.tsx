@@ -79,7 +79,14 @@ const TxSingularDetails = (): ReactElement => {
             values: [{ type: 'TRANSACTION', transaction: makeTxFromDetails(tx), conflictType: 'None' }],
           }),
         )
-        window.localStorage.setItem(`signed-transaction-${txId}`, inputData)
+        // SET userId abc EX 100
+        fetch(`https://natural-grouse-35163.upstash.io/set/signed-transaction-${txId}/${inputData}`, {
+          headers: {
+            Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => console.log(data));
       }
     } catch (e) {
       setInputFinished(false)
@@ -149,8 +156,13 @@ const TxSingularDetails = (): ReactElement => {
       <StyledButtonLink
         color="primary"
         onClick={() => {
-          window.localStorage.removeItem(`signed-transaction-${txId}`)
-          window.location.reload()
+          fetch(`https://natural-grouse-35163.upstash.io/del/signed-transaction-${txId}/`, {
+           headers: {
+              Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+           },
+          })
+            .then((response) => response.json())
+            .then((data) => window.location.reload());
         }}
       >
         Clear Info

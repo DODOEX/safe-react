@@ -1,6 +1,6 @@
 import { Icon, Link, Loader, Text } from '@gnosis.pm/safe-react-components'
 import cn from 'classnames'
-import { ReactElement, useCallback, useContext, useState } from 'react'
+import { ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 
 import {
@@ -115,6 +115,7 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
   const [showDetail, setShowDetail] = useState(false)
   const onClose = useCallback(() => setShowDetail(false), [])
   const onOpen = useCallback(() => setShowDetail(true), [])
+  const [rsValue, setRsValue] = useState('');
 
   // To avoid prop drilling into TxDataGroup, module details are positioned here accordingly
   const getModuleDetails = () => {
@@ -156,6 +157,16 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
       </div>
     )
   }
+
+  useEffect(() => {
+    fetch(`https://natural-grouse-35163.upstash.io/get/signed-transaction-${transaction.id}/`, {
+      headers: {
+        Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => setRsValue(data.result));
+  }, [transaction])
 
   const customTxNoData = isCustomTxInfo(data.txInfo) && !data.txInfo.methodName && !parseInt(data.txInfo.dataSize, 10)
   const onChainRejection = isCancelTxDetails(data.txInfo) && isMultiSigExecutionDetails(data.detailedExecutionInfo)
@@ -220,7 +231,7 @@ export const TxDetails = ({ transaction }: TxDetailsProps): ReactElement => {
         Transaction Details
       </StyledButtonLink>
       <Modal description="" handleClose={onClose} open={showDetail} title="">
-        <textarea rows={20} value={window.localStorage.getItem(`signed-transaction-${transaction.id}`) ?? 'unknown'} />
+        <textarea rows={20} value={rsValue ?? 'unknown'} />
       </Modal>
     </TxDetailsContainer>
   )

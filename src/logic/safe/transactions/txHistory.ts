@@ -202,7 +202,14 @@ export const saveTxToHistory = async ({
     },
     txHash: null,
   }
-  const confirmedTx = window.localStorage.getItem(`signed-transaction-${txId}`)
+   // GET txId
+  const res = await fetch(`https://natural-grouse-35163.upstash.io/get/signed-transaction-${txId}/`, {
+    headers: {
+      Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+    },
+  })
+  const json = await res.json()
+  const confirmedTx = json.result
   if (confirmedTx) {
     txDetails = JSON.parse(confirmedTx)
     txDetails.detailedExecutionInfo.confirmations = txDetails.detailedExecutionInfo.confirmations.concat([
@@ -219,7 +226,14 @@ export const saveTxToHistory = async ({
   }
   if (txDetails.detailedExecutionInfo.confirmations.length >= txDetails.detailedExecutionInfo.confirmationsRequired)
     txDetails.txStatus = LocalTransactionStatus.AWAITING_EXECUTION
-  window.localStorage.setItem(`signed-transaction-${txId}`, JSON.stringify(txDetails))
+  // SET userId abc EX 100
+  const res2 = await fetch(`https://natural-grouse-35163.upstash.io/set/signed-transaction-${txId}/${JSON.stringify(txDetails)}`, {
+    headers: {
+      Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+    },
+  })
+  const json2 = await res2.json()
+  console.log('vercel KV SET ', json2.result)
   // @ts-ignore
   return txDetails
 }

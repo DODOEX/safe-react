@@ -15,7 +15,7 @@
     "name": "Gnosis Team",
     "email": "safe@gnosis.io"
   },
-  "homepage": "/app",
+  "homepage": "/",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "cross-env REACT_APP_APP_VERSION=$npm_package_version rescripts --max-old-space-size=8192 build",
@@ -31,7 +31,7 @@
     "postinstall": "patch-package && yarn generate-types",
     "prettier:check": "yarn prettier --check",
     "prettier:fix": "yarn prettier --write",
-    "prettier": "prettier './src/**/*.{js,jsx,ts,tsx}'",
+    "prettier": "prettier './src/**/*.{js,jsx,ts,tsx}' ",
     "start": "rescripts start",
     "start:docker": "docker-compose build && docker-compose up",
     "test": "cross-env REACT_APP_ENV=test rescripts test --env=jsdom",

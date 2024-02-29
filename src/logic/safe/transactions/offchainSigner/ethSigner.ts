@@ -18,7 +18,7 @@ export const ethSigner = async ({ safeTxHash, sender }: EthSignerArgs): Promise<
     provider.sendAsync(
       {
         jsonrpc: '2.0',
-        method: 'eth_sign',
+        method: 'personal_sign',
         params: [sender, safeTxHash],
         id: new Date().getTime(),
       },
@@ -32,7 +32,7 @@ export const ethSigner = async ({ safeTxHash, sender }: EthSignerArgs): Promise<
           return
         }
 
-        const sig = adjustV('eth_sign', signature.result, safeTxHash, sender)
+        const sig = adjustV('personal_sign', signature.result, safeTxHash, sender)
 
         resolve(sig.replace(EMPTY_DATA, ''))
       },

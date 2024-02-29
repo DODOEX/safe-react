@@ -11,7 +11,7 @@ import { getChainInfo } from 'src/config'
 import { sameAddress } from 'src/logic/wallets/ethAddresses'
 
 const FEATURES_BY_VERSION: Record<string, string> = {
-  [FEATURES.SAFE_TX_GAS_OPTIONAL]: '>=1.3.0',
+  [FEATURES.SAFE_TX_GAS_OPTIONAL]: '>=1.4.0',
 }
 
 export const safeNeedsUpdate = (currentVersion?: string, latestVersion?: string): boolean => {

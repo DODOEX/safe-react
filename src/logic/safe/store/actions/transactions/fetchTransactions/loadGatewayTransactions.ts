@@ -110,9 +110,15 @@ export const loadPagedHistoryTransactions = async (
   }
 
   try {
-    const { results, next } = await getHistoryTxListPage(chainId, safeAddress)
+    // const { results, next, previous } = await getTransactionHistory(
+    //   chainId,
+    //   checksumAddress(safeAddress),
+    //   historyPointers[chainId][safeAddress].next,
+    // )
 
-    return { values: results, next }
+    // historyPointers[chainId][safeAddress] = { next, previous }
+
+    return { values: [], next: historyPointers[chainId][safeAddress].next }
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }
@@ -136,9 +142,21 @@ export const loadHistoryTransactions = async (
   }
 
   try {
+<<<<<<< HEAD
     const { results } = await getHistoryTxListPage(chainId, safeAddress, filter)
+=======
+    // const { results, next, previous } = await getTransactionHistory(chainId, checksumAddress(safeAddress))
 
-    return results
+    // if (!historyPointers[chainId]) {
+    //   historyPointers[chainId] = {}
+    // }
+
+    // if (!historyPointers[chainId][safeAddress]) {
+    //   historyPointers[chainId][safeAddress] = { next, previous }
+    // }
+>>>>>>> 7b8be080a758f26b3407aa5a847e758f8fc13132
+
+    return []
   } catch (e) {
     throw new CodedException(Errors._602, e.message)
   }
@@ -165,15 +183,15 @@ export const loadPagedQueuedTransactions = async (
   }
 
   try {
-    const { results, next, previous } = await getTransactionQueue(
-      chainId,
-      checksumAddress(safeAddress),
-      queuedPointers[chainId][safeAddress].next,
-    )
+    // const { results, next, previous } = await getTransactionQueue(
+    //   chainId,
+    //   checksumAddress(safeAddress),
+    //   queuedPointers[chainId][safeAddress].next,
+    // )
 
-    queuedPointers[chainId][safeAddress] = { next, previous }
+    // queuedPointers[chainId][safeAddress] = { next, previous }
 
-    return { values: results, next: queuedPointers[chainId][safeAddress].next }
+    return { values: [], next: queuedPointers[chainId][safeAddress].next }
   } catch (e) {
     throw new CodedException(Errors._603, e.message)
   }
@@ -182,17 +200,17 @@ export const loadPagedQueuedTransactions = async (
 export const loadQueuedTransactions = async (safeAddress: string): Promise<QueuedGatewayResponse['results']> => {
   const chainId = _getChainId()
   try {
-    const { results, next, previous } = await getTransactionQueue(chainId, checksumAddress(safeAddress))
+    // const { results, next, previous } = await getTransactionQueue(chainId, checksumAddress(safeAddress))
 
-    if (!queuedPointers[chainId]) {
-      queuedPointers[chainId] = {}
-    }
+    // if (!queuedPointers[chainId]) {
+    //   queuedPointers[chainId] = {}
+    // }
 
-    if (!queuedPointers[chainId][safeAddress] || queuedPointers[chainId][safeAddress].next === null) {
-      queuedPointers[chainId][safeAddress] = { next, previous }
-    }
+    // if (!queuedPointers[chainId][safeAddress] || queuedPointers[chainId][safeAddress].next === null) {
+    //   queuedPointers[chainId][safeAddress] = { next, previous }
+    // }
 
-    return results
+    return []
   } catch (e) {
     throw new CodedException(Errors._603, e.message)
   }

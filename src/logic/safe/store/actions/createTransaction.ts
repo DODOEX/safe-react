@@ -36,6 +36,8 @@ import { getContractErrorMessage } from 'src/logic/contracts/safeContractErrors'
 import { isWalletRejection } from 'src/logic/wallets/errors'
 import { trackEvent } from 'src/utils/googleTagManager'
 import { WALLET_EVENTS } from 'src/utils/events/wallet'
+import { addQueuedTransactions } from './transactions/gatewayTransactions'
+import { makeTxFromDetails } from 'src/routes/safe/components/Transactions/TxList/utils'
 
 export interface CreateTransactionArgs {
   navigateToTransactionsTab?: boolean
@@ -104,6 +106,15 @@ export class TxSender {
     if (!isFinalization || !this.txId) {
       try {
         txDetails = await saveTxToHistory({ ...txArgs, signature, origin: txProps.origin })
+        // dispatch(
+        //   addQueuedTransactions({
+        //     // @ts-ignore
+        //     chainId: txDetails.chainId,
+        //     // @ts-ignore
+        //     safeAddress: txDetails.safeAddress,
+        //     values: [{ type: 'TRANSACTION', transaction: makeTxFromDetails(txDetails), conflictType: 'None' }],
+        //   }),
+        // )
         this.txId = txDetails.txId
       } catch (err) {
         logError(Errors._816, err.message)
@@ -335,7 +346,20 @@ export const createTransaction = (
     }
 
     // SafeTxHash acts as the unique ID of a tx throughout the app
-    sender.safeTxHash = generateSafeTxHash(txProps.safeAddress, sender.safeVersion, sender.txArgs)
+    sender.safeTxHash = await sender.safeInstance.methods
+      .getTransactionHash(
+        sender.txArgs.to,
+        sender.txArgs.valueInWei,
+        sender.txArgs.data,
+        sender.txArgs.operation,
+        sender.txArgs.safeTxGas,
+        sender.txArgs.baseGas,
+        sender.txArgs.gasPrice,
+        sender.txArgs.gasToken,
+        sender.txArgs.refundReceiver || '',
+        sender.txArgs.nonce,
+      )
+      .call()
 
     // Start the creation
     sender.submitTx(confirmCallback, errorCallback)

@@ -206,6 +206,7 @@ export const ApproveTxModal = ({ onClose, isOpen, transaction }: Props): React.R
   const { confirmationsSubmitted = 0, confirmationsRequired = 0 } = isMultisigExecutionInfo(executionInfo)
     ? executionInfo
     : {}
+
   const thresholdReached = confirmationsSubmitted >= confirmationsRequired
   const { description, title } = getModalTitleAndDescription(thresholdReached)
 

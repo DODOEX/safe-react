@@ -29,7 +29,8 @@ const getSupportedSigners = (isHW: boolean, safeVersion: string): SupportedSigne
 
   const safeSupportsEthSigner = semverSatisfies(safeVersion, '>=1.1.0')
 
-  const signers: SupportedSigners = isHW ? [] : [SIGNERS.EIP712_V3, SIGNERS.EIP712_V4, SIGNERS.EIP712]
+  // const signers: SupportedSigners = isHW ? [] : [SIGNERS.EIP712_V3, SIGNERS.EIP712_V4, SIGNERS.EIP712]
+  const signers: SupportedSigners = []
 
   if (safeSupportsEthSigner) {
     signers.push(SIGNERS.ETH_SIGN)

@@ -117,6 +117,22 @@ export const fetchTokenCurrenciesBalances = async ({
       name: 'DODO',
       logoUri: '',
     },
+    {
+      type: TokenType.ERC20,
+      address: '0x55d398326f99059ff775485246999027b3197955',
+      decimals: 18,
+      symbol: 'USDT',
+      name: 'USDT',
+      logoUri: '',
+    },
+    {
+      type: TokenType.ERC20,
+      address: '0xb5102cee1528ce2c760893034a4603663495fd72',
+      decimals: 18,
+      symbol: 'USX',
+      name: 'USX',
+      logoUri: '',
+    },
   ]
   const balances = new Map()
   const promises = tokenlist.map((token) =>

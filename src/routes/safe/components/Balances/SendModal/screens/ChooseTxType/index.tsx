@@ -40,7 +40,7 @@ const ChooseTxType = ({
   setActiveScreen,
 }: ChooseTxTypeProps): React.ReactElement => {
   const classes = useStyles()
-  const featuresEnabled = useSelector(currentSafeFeaturesEnabled)
+  const featuresEnabled = [FEATURES.ERC721, FEATURES.CONTRACT_INTERACTION]
   const erc721Enabled = featuresEnabled?.includes(FEATURES.ERC721)
   const contractInteractionEnabled = featuresEnabled?.includes(FEATURES.CONTRACT_INTERACTION)
   const [disableContractInteraction, setDisableContractInteraction] = React.useState(!!recipientAddress)

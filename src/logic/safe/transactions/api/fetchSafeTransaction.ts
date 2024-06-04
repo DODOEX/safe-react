@@ -21,6 +21,15 @@ export const fetchSafeTransaction = async (txId: string): Promise<TransactionDet
     },
   })
   const json = await res.json()
+  const result = JSON.parse(json.result ?? '')
+  if (!result || !result.txId) {
+    await fetch(`https://natural-grouse-35163.upstash.io/del/signed-transaction-${txId}/`, {
+      headers: {
+        Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+      },
+    }) 
+    window.location.reload()
+  }
   const promise: Promise<TransactionDetails> =
     cache[cacheKey] || Promise.resolve(JSON.parse(json.result ?? ''))
 

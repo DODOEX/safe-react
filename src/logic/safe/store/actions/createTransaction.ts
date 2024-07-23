@@ -123,6 +123,7 @@ export class TxSender {
     }
 
     if (isFinalization && this.txId && this.txHash) {
+      await saveTxToHistory({ ...txArgs, signature, origin: txProps.origin, txHash: this.txHash, executor: this.from })
       dispatch(setPendingTransaction({ id: this.txId, txHash: this.txHash }))
     }
 

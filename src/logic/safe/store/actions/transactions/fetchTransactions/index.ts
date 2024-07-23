@@ -19,7 +19,7 @@ export default (chainId: string, safeAddress: string) =>
         const values = await loadHistoryTransactions(safeAddress, filter)
         dispatch(addHistoryTransactions({ chainId, safeAddress, values }))
       } catch (e) {
-        e.log()
+       console.log(e.message)
       }
     }
 
@@ -28,7 +28,7 @@ export default (chainId: string, safeAddress: string) =>
         const values = await loadQueuedTransactions(safeAddress)
         dispatch(addQueuedTransactions({ chainId, safeAddress, values }))
       } catch (e) {
-        e.log()
+       console.log(e.message)
       }
     }
 

@@ -1,4 +1,4 @@
-import { ReactElement, useState, CSSProperties } from 'react'
+import { ReactElement, useState, CSSProperties, useMemo, useEffect } from 'react'
 import styled, { AnyStyledComponent } from 'styled-components'
 import Step from '@material-ui/core/Step'
 import StepConnector from '@material-ui/core/StepConnector'
@@ -21,6 +21,8 @@ import { currentSafe } from 'src/logic/safe/store/selectors'
 import { currentChainId } from 'src/logic/config/store/selectors'
 import { addressBookName } from 'src/logic/addressBook/store/selectors'
 import { userAccountSelector } from 'src/logic/wallets/store/selectors'
+import { PendingTxMonitor } from 'src/logic/safe/transactions/pendingTxMonitor'
+import { getWeb3 } from 'src/logic/wallets/getWeb3'
 
 // Icons
 
@@ -138,10 +140,11 @@ export const TxOwners = ({
   txDetails: ExpandedTxDetails
   isPending: boolean
 }): ReactElement | null => {
-  const { txInfo, detailedExecutionInfo } = txDetails
+  const { txInfo, detailedExecutionInfo, txHash } = txDetails
 
   const [hideConfirmations, setHideConfirmations] = useState<boolean>(shouldHideConfirmations(detailedExecutionInfo))
 
+  const [isExecuted, setIsExecuted] = useState(false)
   const { threshold } = useSelector(currentSafe)
   const account = useSelector(userAccountSelector)
   const chainId = useSelector(currentChainId)
@@ -159,7 +162,17 @@ export const TxOwners = ({
 
   const isImmediateExecution = isPending && threshold === 1
   const isConfirmed = confirmationsNeeded <= 0 || isImmediateExecution
-  const isExecuted = !!detailedExecutionInfo.executor
+  useEffect(() => {
+    if (!txHash) return setIsExecuted(false)
+    const web3 = getWeb3()
+    const watchTx = () => {
+      web3.eth.getTransactionReceipt(txHash).then(receipt => {
+        setIsExecuted(receipt?.status === true)
+        if (!receipt) watchTx()
+      })
+    }
+    watchTx()
+  }, [txHash])
 
   const numberOfConfirmations = isImmediateExecution ? 1 : detailedExecutionInfo.confirmations.length
   return (

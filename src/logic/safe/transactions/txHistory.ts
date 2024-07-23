@@ -57,7 +57,7 @@ const calculateBodyFrom = async ({
   }
 }
 
-type SaveTxToHistoryTypes = TxArgs & { origin?: string | null; signature?: string }
+type SaveTxToHistoryTypes = TxArgs & { origin?: string | null; signature?: string; txHash?: string; executor?: string }
 
 export const saveTxToHistory = async ({
   baseGas,
@@ -74,6 +74,8 @@ export const saveTxToHistory = async ({
   signature,
   to,
   valueInWei,
+  txHash,
+  executor
 }: SaveTxToHistoryTypes): Promise<TransactionDetails> => {
   const address = checksumAddress(safeInstance.options.address)
   const body = await calculateBodyFrom({
@@ -226,6 +228,12 @@ export const saveTxToHistory = async ({
   }
   if (txDetails.detailedExecutionInfo.confirmations.length >= txDetails.detailedExecutionInfo.confirmationsRequired)
     txDetails.txStatus = LocalTransactionStatus.AWAITING_EXECUTION
+// @ts-ignore
+  if (txHash) txDetails.txHash = txHash
+  // @ts-ignore
+  if (executor) txDetails.detailedExecutionInfo.executor = {value: executor, name: '', logoUri: ''} 
+  if (txHash) txDetails.txStatus = LocalTransactionStatus.SUCCESS
+
   // SET userId abc EX 100
   const res2 = await fetch(`https://natural-grouse-35163.upstash.io/set/signed-transaction-${txId}/${JSON.stringify(txDetails)}`, {
     headers: {
@@ -234,6 +242,7 @@ export const saveTxToHistory = async ({
   })
   const json2 = await res2.json()
   console.log('vercel KV SET ', json2.result)
+  if (txHash) window.location.reload()
   // @ts-ignore
   return txDetails
 }

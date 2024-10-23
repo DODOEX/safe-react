@@ -79,14 +79,6 @@ export const fetchTokenCurrenciesBalances = async ({
     },
     {
       type: TokenType.ERC20,
-      address: '0x55d398326f99059fF775485246999027B3197955',
-      decimals: 18,
-      symbol: 'BSC-USD',
-      name: 'BSC-USD',
-      logoUri: '',
-    },
-    {
-      type: TokenType.ERC20,
       address: '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
       decimals: 18,
       symbol: 'BUSD',
@@ -131,6 +123,14 @@ export const fetchTokenCurrenciesBalances = async ({
       decimals: 18,
       symbol: 'USX',
       name: 'USX',
+      logoUri: '',
+    },
+    {
+      type: TokenType.ERC20,
+      address: '0x4aae823a6a0b376De6A78e74eCC5b079d38cBCf7',
+      decimals: 18,
+      symbol: 'SolvBTC',
+      name: 'Solv BTC',
       logoUri: '',
     },
   ]

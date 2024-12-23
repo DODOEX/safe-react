@@ -133,6 +133,14 @@ export const fetchTokenCurrenciesBalances = async ({
       name: 'Solv BTC',
       logoUri: '',
     },
+    {
+      type: TokenType.ERC20,
+      address: '0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c',
+      decimals: 18,
+      symbol: 'BTCB',
+      name: 'Bitcoin BEP2',
+      logoUri: '',
+    },
   ]
   const balances = new Map()
   const promises = tokenlist.map((token) =>

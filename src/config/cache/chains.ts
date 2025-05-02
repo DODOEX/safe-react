@@ -874,7 +874,7 @@ export const loadChains = async () => {
         'trust',
         'walletConnect',
       ],
-      ensRegistryAddress: '0x8FADE66B79cC9f707aB26799354482EB93a5B7dD',
+      ensRegistryAddress: null,
       features: [
         'COUNTERFACTUAL',
         'DEFAULT_TOKENLIST',

@@ -896,15 +896,15 @@ export const loadChains = async () => {
       gasPrice: [],
       publicRpcUri: {
         authentication: 'NO_AUTHENTICATION',
-        value: 'https://rpc.sepolia.org',
+        value: 'https://ethereum-sepolia-rpc.publicnode.com',
       },
       rpcUri: {
-        authentication: 'API_KEY_PATH',
-        value: 'https://sepolia.infura.io/v3/',
+        authentication: 'NO_AUTHENTICATION',
+        value: 'https://ethereum-sepolia-rpc.publicnode.com',
       },
       safeAppsRpcUri: {
-        authentication: 'API_KEY_PATH',
-        value: 'https://goerli.infura.io/v3/',
+        authentication: 'NO_AUTHENTICATION',
+        value: 'https://ethereum-sepolia-rpc.publicnode.com',
       },
       shortName: 'sep',
       theme: {

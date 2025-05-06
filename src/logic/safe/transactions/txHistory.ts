@@ -75,7 +75,7 @@ export const saveTxToHistory = async ({
   to,
   valueInWei,
   txHash,
-  executor
+  executor,
 }: SaveTxToHistoryTypes): Promise<TransactionDetails> => {
   const address = checksumAddress(safeInstance.options.address)
   const body = await calculateBodyFrom({
@@ -174,7 +174,7 @@ export const saveTxToHistory = async ({
         logoUri: '',
       },
       value: body.value,
-      operation: 0,
+      operation: body.operation,
     },
     // @ts-ignore
     detailedExecutionInfo: {
@@ -204,10 +204,11 @@ export const saveTxToHistory = async ({
     },
     txHash: null,
   }
-   // GET txId
+  // GET txId
   const res = await fetch(`https://natural-grouse-35163.upstash.io/get/signed-transaction-${txId}/`, {
     headers: {
-      Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+      Authorization:
+        'Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI=',
     },
   })
   const json = await res.json()
@@ -228,18 +229,22 @@ export const saveTxToHistory = async ({
   }
   if (txDetails.detailedExecutionInfo.confirmations.length >= txDetails.detailedExecutionInfo.confirmationsRequired)
     txDetails.txStatus = LocalTransactionStatus.AWAITING_EXECUTION
-// @ts-ignore
+  // @ts-ignore
   if (txHash) txDetails.txHash = txHash
   // @ts-ignore
-  if (executor) txDetails.detailedExecutionInfo.executor = {value: executor, name: '', logoUri: ''} 
+  if (executor) txDetails.detailedExecutionInfo.executor = { value: executor, name: '', logoUri: '' }
   if (txHash) txDetails.txStatus = LocalTransactionStatus.SUCCESS
 
   // SET userId abc EX 100
-  const res2 = await fetch(`https://natural-grouse-35163.upstash.io/set/signed-transaction-${txId}/${JSON.stringify(txDetails)}`, {
-    headers: {
-      Authorization: "Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI="
+  const res2 = await fetch(
+    `https://natural-grouse-35163.upstash.io/set/signed-transaction-${txId}/${JSON.stringify(txDetails)}`,
+    {
+      headers: {
+        Authorization:
+          'Bearer AYlbASQgNGM3ODA5ZGUtY2NiYS00Zjg1LTk0NzEtOGRhNDM4NmRjNzU3MTNjODdhYmJkMWU4NDNlMTgxZTFiNTA4ZWVkNzJkNWI=',
+      },
     },
-  })
+  )
   const json2 = await res2.json()
   console.log('vercel KV SET ', json2.result)
   if (txHash) window.location.reload()

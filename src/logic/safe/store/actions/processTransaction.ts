@@ -53,7 +53,7 @@ export const processTransaction = (props: ProcessTransactionArgs): ProcessTransa
     sender.txId = tx.id
 
     const txProps = {
-      navigateToTransactionsTab: false,
+      navigateToTransactionsTab: true,
       notifiedTransaction: props.notifiedTransaction,
       operation: tx.operation,
       origin: tx.origin,

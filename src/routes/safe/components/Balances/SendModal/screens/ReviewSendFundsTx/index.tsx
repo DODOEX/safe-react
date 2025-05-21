@@ -198,7 +198,15 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
         {/* Amount */}
         {txToken && (
           <Row align="center" margin="md">
-            <TransferAmount token={txToken} text={`${tx.amount} ${txToken.symbol}`} />
+            <Col xs={12}>
+              <TransferAmount token={txToken} text={`${tx.amount} ${txToken.symbol}`} />
+            </Col>
+            <Col xs={12}>
+              <Paragraph align="center" noMargin size="lg">
+                {toTokenUnit(tx.amount, txToken.decimals)}
+              </Paragraph>
+              <CopyToClipboardBtn textToCopy={toTokenUnit(tx.amount, txToken.decimals)} />
+            </Col>
           </Row>
         )}
 

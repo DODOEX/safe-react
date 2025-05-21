@@ -40,6 +40,8 @@ import { createSendParams } from 'src/logic/safe/transactions/gas'
 import { SpendingLimitModalWrapper } from 'src/routes/safe/components/Transactions/helpers/SpendingLimitModalWrapper'
 import { getNotificationsFromTxType } from 'src/logic/notifications'
 import { closeNotification, showNotification } from 'src/logic/notifications/store/notifications'
+import { getByteLength } from 'src/utils/getByteLength'
+import { CopyToClipboardBtn } from '@gnosis.pm/safe-react-components'
 
 const useStyles = makeStyles(styles)
 
@@ -220,6 +222,12 @@ const ReviewSendFundsTx = ({ onClose, onPrev, tx }: ReviewTxProps): React.ReactE
               showAvatar
               explorerUrl={getExplorerInfo(tx.recipientAddress)}
             />
+          </Col>
+          <Col xs={12}>
+            <Paragraph noMargin size="lg">
+              {txData ? getByteLength(txData) : 0} bytes
+            </Paragraph>
+            <CopyToClipboardBtn textToCopy={txData} />
           </Col>
         </Row>
       </Block>

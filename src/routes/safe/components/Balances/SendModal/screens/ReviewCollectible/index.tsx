@@ -25,7 +25,8 @@ import { TxModalWrapper } from 'src/routes/safe/components/Transactions/helpers/
 import { ModalHeader } from 'src/routes/safe/components/Balances/SendModal/screens/ModalHeader'
 import { getStepTitle } from 'src/routes/safe/components/Balances/SendModal/utils'
 import useSafeAddress from 'src/logic/currentSession/hooks/useSafeAddress'
-
+import { getByteLength } from 'src/utils/getByteLength'
+import { CopyToClipboardBtn } from '@gnosis.pm/safe-react-components'
 const useStyles = makeStyles(styles)
 
 export type CollectibleTx = {
@@ -122,6 +123,12 @@ const ReviewCollectible = ({ onClose, onPrev, tx }: Props): React.ReactElement =
               showCopyBtn
               explorerUrl={getExplorerInfo(tx.recipientAddress)}
             />
+          </Col>
+          <Col xs={12}>
+            <Paragraph noMargin size="lg">
+              {txData ? getByteLength(txData) : 0} bytes
+            </Paragraph>
+            <CopyToClipboardBtn textToCopy={txData} />
           </Col>
         </Row>
         <Row margin="xs">

@@ -89,6 +89,14 @@ export const fetchTokenCurrenciesBalances = async ({
       },
       {
         type: TokenType.ERC20,
+        address: '0x1af3f329e8be154074d8769d1ffa4ee058b1dbc3',
+        decimals: 18,
+        symbol: 'DAI',
+        name: 'DAI',
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
         address: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c',
         decimals: 18,
         symbol: 'WBNB',

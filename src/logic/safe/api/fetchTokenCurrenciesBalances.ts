@@ -313,6 +313,14 @@ export const fetchTokenCurrenciesBalances = async ({
       },
       {
         type: TokenType.ERC20,
+        address: '0x84e9a6f9d240fdd33801f7135908bfa16866939a',
+        name: 'GMEE',
+        symbol: 'GMEE',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
         address: '0x0e09fabb73bd3ade0a17ecc321fd13a19e81ce82',
         name: 'Cake',
         symbol: 'CAKE',

@@ -313,6 +313,22 @@ export const fetchTokenCurrenciesBalances = async ({
       },
       {
         type: TokenType.ERC20,
+        address: '0x3019bf2a2ef8040c242c9a4c5c4bd4c81678b2a1',
+        name: 'GMT',
+        symbol: 'GMT',
+        decimals: 8,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0x9f3bcbe48e8b754f331dfc694a894e8e686ac31d',
+        name: 'ACT',
+        symbol: 'ACT',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
         address: '0x84e9a6f9d240fdd33801f7135908bfa16866939a',
         name: 'GMEE',
         symbol: 'GMEE',

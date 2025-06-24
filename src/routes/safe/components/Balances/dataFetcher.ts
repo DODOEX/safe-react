@@ -12,6 +12,9 @@ export interface BalanceData {
   balanceOrder: number
   value: string
   valueOrder: number
+  // Add raw balance data for full precision display
+  rawTokenBalance: string
+  tokenDecimals: number | string
 }
 
 export const getBalanceData = (safeTokens: List<Token>, currencySelected: string): List<BalanceData> => {
@@ -30,6 +33,9 @@ export const getBalanceData = (safeTokens: List<Token>, currencySelected: string
       balanceOrder: Number(tokenBalance),
       [BALANCE_TABLE_VALUE_ID]: formatCurrency(fiatBalance?.toString() || '0', currencySelected),
       valueOrder: Number(tokenBalance),
+      // Store raw data for full precision display
+      rawTokenBalance: tokenBalance?.toString() || '0',
+      tokenDecimals: token.decimals,
     }
   })
 }

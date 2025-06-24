@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { List } from 'immutable'
@@ -9,7 +9,8 @@ import TableRow from '@material-ui/core/TableRow'
 import { Skeleton } from '@material-ui/lab'
 
 import InfoIcon from 'src/assets/icons/info_red.svg'
-import { FixedIcon, Text, Button } from '@gnosis.pm/safe-react-components'
+import { FixedIcon, Text, Button, CopyToClipboardBtn } from '@gnosis.pm/safe-react-components'
+import { formatAmount } from 'src/logic/tokens/utils/formatAmount'
 
 import Img from 'src/components/layout/Img'
 import Table from 'src/components/Table'
@@ -17,6 +18,7 @@ import { cellWidth } from 'src/components/Table/TableHead'
 import Row from 'src/components/layout/Row'
 import { BALANCE_ROW_TEST_ID } from 'src/routes/safe/components/Balances'
 import AssetTableCell from 'src/routes/safe/components/Balances/AssetTableCell'
+import ExportModal from 'src/routes/safe/components/Balances/ExportModal'
 import {
   BALANCE_TABLE_ASSET_ID,
   BALANCE_TABLE_BALANCE_ID,
@@ -44,11 +46,37 @@ const StyledButton = styled(Button)`
   }
 `
 
+const BalanceContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+`
+
+const StyledCopyBtn = styled(CopyToClipboardBtn)`
+  height: 20px;
+  width: 20px;
+  min-width: 20px;
+
+  & span {
+    width: 20px;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  & svg {
+    width: 12px;
+    height: 12px;
+  }
+`
+
 const useStyles = makeStyles(styles)
 
 type Props = {
   showReceiveFunds: () => void
   showSendFunds: (tokenAddress: string) => void
+  showExport?: () => void
 }
 
 type CurrencyTooltipProps = {
@@ -82,6 +110,8 @@ const Coins = (props: Props): React.ReactElement => {
   const safeTokens = useSelector(extendedSafeTokensSelector)
   const granted = useSelector(grantedSelector)
 
+  const [showExportModal, setShowExportModal] = useState(false)
+
   const differingTokens = useMemo(() => safeTokens.size, [safeTokens])
   useEffect(() => {
     // Safe does not have any tokens until fetching is complete
@@ -96,86 +126,130 @@ const Coins = (props: Props): React.ReactElement => {
   )
 
   return (
-    <TableContainer>
-      <Table columns={columns} data={filteredData} defaultRowsPerPage={100} label="Balances" size={filteredData.size}>
-        {(sortedData) =>
-          sortedData.map((row, index) => (
-            <TableRow className={classes.hide} data-testid={BALANCE_ROW_TEST_ID} key={index} tabIndex={-1}>
-              {autoColumns.map((column) => {
-                const { align, id, width } = column
-                let cellItem
-                switch (id) {
-                  case BALANCE_TABLE_ASSET_ID: {
-                    cellItem = <AssetTableCell asset={row[id]} />
-                    break
-                  }
-                  case BALANCE_TABLE_BALANCE_ID: {
-                    cellItem = <div data-testid={`balance-${row[BALANCE_TABLE_ASSET_ID].symbol}`}>{row[id]}</div>
-                    break
-                  }
-                  case BALANCE_TABLE_VALUE_ID: {
-                    // If there are no values for that row but we have balances, we display as '0.00 {CurrencySelected}'
-                    // In case we don't have balances, we display a skeleton
-                    const showCurrencyValueRow = row[id] || row[BALANCE_TABLE_BALANCE_ID]
-                    const valueWithCurrency = row[id] ? row[id] : `0.00 ${selectedCurrency}`
-                    cellItem =
-                      showCurrencyValueRow && selectedCurrency ? (
-                        <div className={classes.currencyValueRow}>
-                          {valueWithCurrency}
-                          <CurrencyTooltip
-                            valueWithCurrency={valueWithCurrency}
-                            balanceWithSymbol={row[BALANCE_TABLE_BALANCE_ID]}
-                          />
-                        </div>
-                      ) : (
-                        <Skeleton animation="wave" />
+    <>
+      {/* Export Button */}
+      <Row align="end" style={{ marginBottom: '16px' }}>
+        <StyledButton
+          color="primary"
+          onClick={() => setShowExportModal(true)}
+          size="md"
+          variant="outlined"
+          data-testid="export-balances-btn"
+        >
+          <FixedIcon type="arrowSent" />
+          <Text size="xl">Export</Text>
+        </StyledButton>
+      </Row>
+
+      <TableContainer>
+        <Table columns={columns} data={filteredData} defaultRowsPerPage={100} label="Balances" size={filteredData.size}>
+          {(sortedData) =>
+            sortedData.map((row, index) => (
+              <TableRow className={classes.hide} data-testid={BALANCE_ROW_TEST_ID} key={index} tabIndex={-1}>
+                {autoColumns.map((column) => {
+                  const { align, id, width } = column
+                  let cellItem
+                  switch (id) {
+                    case BALANCE_TABLE_ASSET_ID: {
+                      cellItem = <AssetTableCell asset={row[id]} />
+                      break
+                    }
+                    case BALANCE_TABLE_BALANCE_ID: {
+                      const rawBalance = row.rawTokenBalance
+                      const symbol = row[BALANCE_TABLE_ASSET_ID].symbol
+                      const formattedBalance = formatAmount(rawBalance)
+                      const fullBalanceWithSymbol = `${rawBalance} ${symbol}`
+                      const fullBalance = `${rawBalance}`
+                      const formattedBalanceWithSymbol = `${formattedBalance} ${symbol}`
+
+                      // Check if the formatted version is different from raw (indicating precision loss)
+                      const hasPrecisionLoss = rawBalance !== formattedBalance && parseFloat(rawBalance) !== 0
+
+                      cellItem = (
+                        <BalanceContainer>
+                          <Tooltip
+                            title={
+                              hasPrecisionLoss ? 'Full precision: ' + fullBalanceWithSymbol : formattedBalanceWithSymbol
+                            }
+                            arrow
+                            placement="top"
+                          >
+                            <div data-testid={`balance-${symbol}`} style={{ textAlign: 'right' }}>
+                              {formattedBalanceWithSymbol}
+                            </div>
+                          </Tooltip>
+                          {hasPrecisionLoss && <StyledCopyBtn textToCopy={fullBalance} iconType="copy" />}
+                        </BalanceContainer>
                       )
-                    break
+                      break
+                    }
+                    case BALANCE_TABLE_VALUE_ID: {
+                      // If there are no values for that row but we have balances, we display as '0.00 {CurrencySelected}'
+                      // In case we don't have balances, we display a skeleton
+                      const showCurrencyValueRow = row[id] || row[BALANCE_TABLE_BALANCE_ID]
+                      const valueWithCurrency = row[id] ? row[id] : `0.00 ${selectedCurrency}`
+                      cellItem =
+                        showCurrencyValueRow && selectedCurrency ? (
+                          <div className={classes.currencyValueRow}>
+                            {valueWithCurrency}
+                            <CurrencyTooltip
+                              valueWithCurrency={valueWithCurrency}
+                              balanceWithSymbol={row[BALANCE_TABLE_BALANCE_ID]}
+                            />
+                          </div>
+                        ) : (
+                          <Skeleton animation="wave" />
+                        )
+                      break
+                    }
+                    default: {
+                      cellItem = null
+                      break
+                    }
                   }
-                  default: {
-                    cellItem = null
-                    break
-                  }
-                }
-                return (
-                  <TableCell align={align} component="td" key={id} style={cellWidth(width)}>
-                    {cellItem}
-                  </TableCell>
-                )
-              })}
-              <TableCell component="td">
-                <Row align="end" className={classes.actions}>
-                  {granted && (
-                    <Track {...ASSETS_EVENTS.SEND}>
-                      <StyledButton
-                        color="primary"
-                        onClick={() => showSendFunds(row.asset.address)}
-                        size="md"
-                        variant="contained"
-                        data-testid="balance-send-btn"
-                      >
-                        <FixedIcon type="arrowSentWhite" />
+                  return (
+                    <TableCell align={align} component="td" key={id} style={cellWidth(width)}>
+                      {cellItem}
+                    </TableCell>
+                  )
+                })}
+                <TableCell component="td">
+                  <Row align="end" className={classes.actions}>
+                    {granted && (
+                      <Track {...ASSETS_EVENTS.SEND}>
+                        <StyledButton
+                          color="primary"
+                          onClick={() => showSendFunds(row.asset.address)}
+                          size="md"
+                          variant="contained"
+                          data-testid="balance-send-btn"
+                        >
+                          <FixedIcon type="arrowSentWhite" />
+                          <Text size="xl" color="white">
+                            Send
+                          </Text>
+                        </StyledButton>
+                      </Track>
+                    )}
+                    <Track {...ASSETS_EVENTS.RECEIVE}>
+                      <StyledButton color="primary" onClick={showReceiveFunds} size="md" variant="contained">
+                        <FixedIcon type="arrowReceivedWhite" />
                         <Text size="xl" color="white">
-                          Send
+                          Receive
                         </Text>
                       </StyledButton>
                     </Track>
-                  )}
-                  <Track {...ASSETS_EVENTS.RECEIVE}>
-                    <StyledButton color="primary" onClick={showReceiveFunds} size="md" variant="contained">
-                      <FixedIcon type="arrowReceivedWhite" />
-                      <Text size="xl" color="white">
-                        Receive
-                      </Text>
-                    </StyledButton>
-                  </Track>
-                </Row>
-              </TableCell>
-            </TableRow>
-          ))
-        }
-      </Table>
-    </TableContainer>
+                  </Row>
+                </TableCell>
+              </TableRow>
+            ))
+          }
+        </Table>
+      </TableContainer>
+
+      {/* Export Modal */}
+      <ExportModal isOpen={showExportModal} onClose={() => setShowExportModal(false)} />
+    </>
   )
 }
 

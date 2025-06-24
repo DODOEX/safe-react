@@ -1,5 +1,5 @@
 import { ReactElement } from 'react'
-import { ExplorerButton } from '@gnosis.pm/safe-react-components'
+import { ExplorerButton, CopyToClipboardBtn } from '@gnosis.pm/safe-react-components'
 import styled from 'styled-components'
 
 import Block from 'src/components/layout/Block'
@@ -15,6 +15,19 @@ const StyledParagraph = styled(Paragraph)`
   margin-right: 10px;
 `
 
+const StyledCopyToClipboardBtn = styled(CopyToClipboardBtn)`
+  margin-left: 5px;
+  height: 26px;
+  width: 26px;
+
+  & span {
+    width: 26px;
+    height: 26px;
+    justify-content: center;
+    align-items: center;
+  }
+`
+
 const AssetTableCell = ({ asset }: { asset: BalanceData['asset'] }): ReactElement => {
   const isNativeCurrency = asset.address === getNativeCurrencyAddress()
   return (
@@ -23,7 +36,12 @@ const AssetTableCell = ({ asset }: { asset: BalanceData['asset'] }): ReactElemen
       <StyledParagraph noMargin size="lg">
         {asset.name}
       </StyledParagraph>
-      {!isNativeCurrency && <ExplorerButton explorerUrl={getExplorerInfo(asset.address)} />}
+      {!isNativeCurrency && (
+        <>
+          <StyledCopyToClipboardBtn textToCopy={asset.address} />
+          <ExplorerButton explorerUrl={getExplorerInfo(asset.address)} />
+        </>
+      )}
     </Block>
   )
 }

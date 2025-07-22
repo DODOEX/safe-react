@@ -415,6 +415,46 @@ export const fetchTokenCurrenciesBalances = async ({
         decimals: 9,
         logoUri: '',
       },
+      {
+        type: TokenType.ERC20,
+        address: '0x36708c560491f0fcd23b57a78bc3f37dc0cb4478',
+        name: 'NFT-A1',
+        symbol: 'NFT-A1',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0xe9a5c635c51002fa5f377f956a8ce58573d63d91',
+        name: 'T99',
+        symbol: 'T99',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0x5c999e15b71de2bb8e651f0f999fb0bc321a0dfe',
+        name: 'ZED',
+        symbol: 'ZED',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0xd5eeec1a534c35c418b44bb28e4d5a602f1a22de',
+        name: 'IGT',
+        symbol: 'IGT',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0x6e9804a08092d8ba4e69dacf422df12459f2599e',
+        name: 'stHYPER',
+        symbol: 'stHYPER',
+        decimals: 18,
+        logoUri: '',
+      },
     ]
     const balances = new Map()
     const promises = tokenlist.map((token) =>

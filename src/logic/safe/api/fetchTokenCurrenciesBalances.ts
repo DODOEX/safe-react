@@ -545,7 +545,7 @@ export const fetchTokenCurrenciesBalances = async ({
       },
       {
         type: TokenType.ERC20,
-        address: '0x9d5b4ed0dfa9f6d38154b6245222fe3ef83c54',
+        address: '0x9d5b4ED0dFA9f6d38154b6245222FE3Ef83c542e',
         name: '11UP',
         symbol: '11UP',
         decimals: 18,

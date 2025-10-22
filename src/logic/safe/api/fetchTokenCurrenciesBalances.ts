@@ -551,6 +551,22 @@ export const fetchTokenCurrenciesBalances = async ({
         decimals: 18,
         logoUri: '',
       },
+      {
+        type: TokenType.ERC20,
+        address: '0x30dcf96a8a0c742aa1f534fac79e99d320c97901',
+        name: 'SourceLess',
+        symbol: 'STR',
+        decimals: 13,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0x93749e69560efe1ad6661903e47df538492c50a4',
+        name: 'EVDC',
+        symbol: 'EVDC',
+        decimals: 9,
+        logoUri: '',
+      },
     ]
     const balances = new Map()
     const promises = tokenlist.map((token) =>

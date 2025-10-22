@@ -567,6 +567,14 @@ export const fetchTokenCurrenciesBalances = async ({
         decimals: 9,
         logoUri: '',
       },
+      {
+        type: TokenType.ERC20,
+        address: '0x9E24415d1e549EBc626a13a482Bb117a2B43e9CF',
+        name: 'Lovely Inu Finance',
+        symbol: 'LOVELY',
+        decimals: 8,
+        logoUri: '',
+      },
     ]
     const balances = new Map()
     const promises = tokenlist.map((token) =>

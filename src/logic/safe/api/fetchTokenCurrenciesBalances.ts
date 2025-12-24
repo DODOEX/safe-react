@@ -575,6 +575,30 @@ export const fetchTokenCurrenciesBalances = async ({
         decimals: 8,
         logoUri: '',
       },
+      {
+        type: TokenType.ERC20,
+        address: '0xa5b000d453143b357dba63f4ee83f2f6fda832b8',
+        name: 'Metya Token',
+        symbol: 'MET',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0x61ec85ab89377db65762e234c946b5c25a56e99e',
+        name: 'HTX',
+        symbol: 'HTX',
+        decimals: 18,
+        logoUri: '',
+      },
+      {
+        type: TokenType.ERC20,
+        address: '0xe6df05ce8c8301223373cf5b969afcb1498c5528',
+        name: 'BNB48 Club Token',
+        symbol: 'KOGE',
+        decimals: 18,
+        logoUri: '',
+      },
     ]
     const balances = new Map()
     const promises = tokenlist.map((token) =>
